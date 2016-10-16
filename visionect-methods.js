@@ -12,13 +12,20 @@ var helper = require('./visionect-helper'),
 
     util = require('util');
 
-function visionectGetMethod(path){
+function visionectGetMethod(path,contentType){
     var method = 'GET',
-    contentType = 'application/json',
+    contentType = contentType ? contentType : 'application/json',
     date = Date(),
-    expectedHttpCode = 200;
+    expectedHttpCode = 200,
+    // strip get arguments from path
+    cleanPath = (path.indexOf('?') > -1 ) ? path.substr(0, path.indexOf('?')) : path;
 
-    var authorization = helper.getAuthorization(path,method,contentType,date);
+    console.log('contentType : ',contentType);
+
+    console.log('PATH : ',path);
+    console.log('CLEANPATH : ',cleanPath);
+
+    var authorization = helper.getAuthorization(cleanPath,method,contentType,date);
 
     var headers = {
       'content-type' : contentType,
