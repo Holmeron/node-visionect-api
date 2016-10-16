@@ -1,0 +1,21 @@
+{
+  "name": "visionect-api",
+  "version": "1.0.0",
+  "description": "used to quickly bootstrap an app using visionect api",
+  "main": "app-config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "holmeron",
+  "license": "ISC",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "http": "0.0.0",
+    "sjcl": "^1.0.6",
+    "util": "^0.10.3"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "visionect"
+  ]
+}
