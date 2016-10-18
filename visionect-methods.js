@@ -20,11 +20,6 @@ function visionectGetMethod(path,contentType){
     // strip get arguments from path
     cleanPath = (path.indexOf('?') > -1 ) ? path.substr(0, path.indexOf('?')) : path;
 
-    console.log('contentType : ',contentType);
-
-    console.log('PATH : ',path);
-    console.log('CLEANPATH : ',cleanPath);
-
     var authorization = helper.getAuthorization(cleanPath,method,contentType,date);
 
     var headers = {
@@ -53,7 +48,7 @@ function visionectGetMethod(path,contentType){
           body += chunk;
         });
         response.on('end', function () {
-          resolve(body);
+            resolve(body);
         });
       });
       request.end();
@@ -62,8 +57,51 @@ function visionectGetMethod(path,contentType){
   return promise;
 
 }
-function visionectPutMethod(){
+function visionectPutMethod(path,body,expectedHttpCode,contentType){
+  var method = 'PUT',
+  contentType = contentType ? contentType : 'application/json',
+  date = Date(),
+  expectedHttpCode = expectedHttpCode ? expectedHttpCode : 201,
+  // strip get arguments from path
+  cleanPath = (path.indexOf('?') > -1 ) ? path.substr(0, path.indexOf('?')) : path;
 
+  var authorization = helper.getAuthorization(cleanPath,method,contentType,date),
+      formatted = JSON.stringify(body);
+
+  var headers = {
+    'content-type' : contentType,
+    'Date' : date,
+    'Authorization' : authorization
+  };
+
+  var request = http.request({
+     method: method,
+     host: helper.getHost(),
+     port: helper.getPort(),
+     path: path,
+     headers: headers
+  });
+  request.end(formatted);
+
+
+  var promise = new Promise(
+  function(resolve, reject) {
+
+    request.on('response', function (response) {
+       var body = '';
+       if (response.statusCode  != expectedHttpCode) {
+          resolve(('Error: ' + response.statusCode));
+       }
+      response.on('data', function (chunk) {
+        body += chunk;
+      });
+      response.on('end', function () {
+          resolve(body);
+      });
+    });
+
+});
+return promise;
 }
 
 function visionectPostMethod(){

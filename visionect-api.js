@@ -46,12 +46,12 @@ function getDevice(uuid){
   return methods.visionectGetMethod('/api/device/'+uuid);
 }
 
-function updateDevice(){
-
+function updateDevice(uuid,body){
+  return methods.visionectPutMethod('/api/device/'+uuid,body,204);
 }
 
-function updateDeviceList(){
-
+function updateDeviceList(bodyList){
+  return methods.visionectPutMethod('/api/device/',bodyList,204);
 }
 
 function removeDevice(){
@@ -70,12 +70,12 @@ function getSessionList(){
   return methods.visionectGetMethod('/api/session/');
 }
 
-function updateSession(){
-
+function updateSession(uuid,body){
+  return methods.visionectPutMethod('/api/session/'+uuid,body,204);
 }
 
-function updateSessionList(){
-
+function updateSessionList(body){
+  return methods.visionectPutMethod('/api/session/',body,204);
 }
 
 function removeSession(){
@@ -102,12 +102,12 @@ function getUserList(){
   return methods.visionectGetMethod('/api/user/');
 }
 
-function updateUser(){
-
+function updateUser(name,body){
+  return methods.visionectPutMethod('/api/user/'+name,body,201);
 }
 
-function updateUserList(){
-
+function updateUserList(body){
+  return methods.visionectPutMethod('/api/user/',body,201);
 }
 
 function createUser(){
@@ -118,8 +118,8 @@ function getConfig(){
   return methods.visionectGetMethod('/api/config/');
 }
 
-function updateConfig(){
-
+function updateConfig(body){
+  return methods.visionectPutMethod('/api/config/',body,204);
 }
 
 function getLiveServerView(uuid){
