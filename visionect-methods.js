@@ -9,105 +9,70 @@ module.exports = visionectMethods;
 
 var helper = require('./visionect-helper'),
     http = require('http'),
-
     util = require('util');
 
-function visionectGetMethod(path,contentType){
-    var method = 'GET',
-    contentType = contentType ? contentType : 'application/json',
-    date = Date(),
-    expectedHttpCode = 200,
-    // strip get arguments from path
-    cleanPath = (path.indexOf('?') > -1 ) ? path.substr(0, path.indexOf('?')) : path;
+function visionectRequest(path,method,contentType,body,expectedHttpCode){
+  var method = method ? method : 'GET',
+      contentType = contentType ? contentType : 'application/json',
+      expectedHttpCode = expectedHttpCode ? expectedHttpCode : 200,
+      date = Date(),
+      // strip get arguments from path
+      cleanPath = (path.indexOf('?') > -1 ) ? path.substr(0, path.indexOf('?')) : path;
 
-    var authorization = helper.getAuthorization(cleanPath,method,contentType,date);
+      var authorization = helper.getAuthorization(cleanPath,method,contentType,date);
 
-    var headers = {
-      'content-type' : contentType,
-      'Date' : date,
-      'Authorization' : authorization
-    };
+      var headers = {
+        'content-type' : contentType,
+        'Date' : date,
+        'Authorization' : authorization
+      };
+      
+      body = body ? JSON.stringify(body) : null;
 
-    var request = http.request({
-       method: method,
-       host: helper.getHost(),
-       port: helper.getPort(),
-       path: path,
-       headers: headers
-    });
+      var request = http.request({
+         method: method,
+         host: helper.getHost(),
+         port: helper.getPort(),
+         path: path,
+         headers: headers
+      });
+      request.end(body);
+
+console.log(method,helper.getHost(),helper.getPort(),path,body,authorization,date);
 
     var promise = new Promise(
-    function(resolve, reject) {
+      function(resolve, reject) {
 
-      request.on('response', function (response) {
-         var body = '';
-         if (response.statusCode  != expectedHttpCode) {
-            resolve(('Error: ' + response.statusCode));
-         }
-        response.on('data', function (chunk) {
-          body += chunk;
+        request.on('response', function (response) {
+           var responseBody = '';
+           if (response.statusCode  != expectedHttpCode) {
+              resolve(('Error: ' + response.statusCode));
+           }
+          response.on('data', function (chunk) {
+            responseBody += chunk;
+          });
+          response.on('end', function () {
+              resolve(responseBody);
+          });
         });
-        response.on('end', function () {
-            resolve(body);
-        });
-      });
-      request.end();
-
-  });
-  return promise;
+      }
+    );
+    return promise;
 
 }
+
+function visionectGetMethod(path,expectedHttpCode,contentType){
+  return visionectRequest(path,'GET',contentType,null,expectedHttpCode)
+}
+
 function visionectPutMethod(path,body,expectedHttpCode,contentType){
-  var method = 'PUT',
-  contentType = contentType ? contentType : 'application/json',
-  date = Date(),
-  expectedHttpCode = expectedHttpCode ? expectedHttpCode : 201,
-  // strip get arguments from path
-  cleanPath = (path.indexOf('?') > -1 ) ? path.substr(0, path.indexOf('?')) : path;
-
-  var authorization = helper.getAuthorization(cleanPath,method,contentType,date),
-      formatted = JSON.stringify(body);
-
-  var headers = {
-    'content-type' : contentType,
-    'Date' : date,
-    'Authorization' : authorization
-  };
-
-  var request = http.request({
-     method: method,
-     host: helper.getHost(),
-     port: helper.getPort(),
-     path: path,
-     headers: headers
-  });
-  request.end(formatted);
-
-
-  var promise = new Promise(
-  function(resolve, reject) {
-
-    request.on('response', function (response) {
-       var body = '';
-       if (response.statusCode  != expectedHttpCode) {
-          resolve(('Error: ' + response.statusCode));
-       }
-      response.on('data', function (chunk) {
-        body += chunk;
-      });
-      response.on('end', function () {
-          resolve(body);
-      });
-    });
-
-});
-return promise;
+  return visionectRequest(path,'PUT',contentType,body,expectedHttpCode);
 }
 
-function visionectPostMethod(){
-
+function visionectPostMethod(path,body,expectedHttpCode,contentType){
+  return visionectRequest(path,'POST',contentType,body,expectedHttpCode);
 }
 
-function visionectDeleteMethod(){
-
+function visionectDeleteMethod(path,contentType,expectedHttpCode){
+  return visionectRequest(path,'DELETE',contentType,null,expectedHttpCode);
 }

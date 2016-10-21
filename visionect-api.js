@@ -103,7 +103,7 @@ function getUserList(){
 }
 
 function updateUser(name,body){
-  return methods.visionectPutMethod('/api/user/'+name,body,201);
+  return methods.visionectPutMethod('/api/user/'+name,body,204);
 }
 
 function updateUserList(body){
