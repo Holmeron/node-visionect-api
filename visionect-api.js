@@ -134,6 +134,6 @@ function getDeviceStatus(uuid,dateFrom,dateTo,group){
   return methods.visionectGetMethod('/api/devicestatus/'+uuid+'?from='+dateFrom+'&to='+dateTo+'&group='+group);
 }
 
-function sendImage(){
-
+function sendImage(uuid,imageFile){
+  return methods.visionectSendImage(uuid,imageFile);
 }
