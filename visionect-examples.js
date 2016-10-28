@@ -3,8 +3,8 @@ var api = require('./visionect-api.js');
 var config = {
     apiKey: '',
     apiSecret: '',
-    setHost: '',
-    setPort: ''
+    host: '',
+    port: ''
 }
 
 api.setConfig(config);
