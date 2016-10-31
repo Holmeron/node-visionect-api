@@ -72,14 +72,14 @@ function visionectSendImage(uuid, imageFile) {
 
     var form = new FormData();
     form.append('image', imageStream);
-    var headers = form.getHeaders();
-    date = Date(),
+    var headers = form.getHeaders(),
+        date = Date(),
         path = util.format('/backend/%s', uuid),
-        method = 'PUT',
-        contentType = 'image/png';
+        method = 'PUT';
     headers.Date = date;
-    headers.Authorization = helper.getAuthorization(path, method, contentType, date);
+    headers.Authorization = helper.getAuthorization(path, method, headers['content-type'], date);
 
+    console.log(helper.getHost());
     var request = http.request({
         method: method,
         host: helper.getHost(),
@@ -112,9 +112,11 @@ function visionectSendImage(uuid, imageFile) {
                     res.end('error imageStream : ', err);
                 });
                 res.on('data', function (chunk) {
+                    console.log('chocolate ',chunk);
                     body += chunk;
                 });
                 res.on('end', function () {
+                    console.log('end : ' + body);
                     resolve(body);
                 });
             });
