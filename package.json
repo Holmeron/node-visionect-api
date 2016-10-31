@@ -1,8 +1,8 @@
 {
   "name": "visionect-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "used to quickly bootstrap an app using visionect api",
-  "main": "app-config.js",
+  "main": "visionect-api.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
