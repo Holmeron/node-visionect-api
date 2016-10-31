@@ -3,7 +3,8 @@ var visionectMethods = {
     visionectPutMethod: visionectPutMethod,
     visionectPostMethod: visionectPostMethod,
     visionectDeleteMethod: visionectDeleteMethod,
-    visionectSendImage: visionectSendImage
+    visionectSendImage: visionectSendImage,
+    visionectGetImageMethod : visionectGetImageMethod
 }
 
 module.exports = visionectMethods;
@@ -37,7 +38,8 @@ function visionectRequest(path, method, contentType, body, expectedHttpCode) {
         host: helper.getHost(),
         port: helper.getPort(),
         path: path,
-        headers: headers
+        headers: headers,
+        encoding: 'binary'
     });
     request.end(body);
 
@@ -47,6 +49,7 @@ function visionectRequest(path, method, contentType, body, expectedHttpCode) {
         function (resolve, reject) {
 
             request.on('response', function (response) {
+                response.setEncoding('binary');
                 var responseBody = '';
                 if (response.statusCode != expectedHttpCode) {
                     resolve(('Error: ' + response.statusCode));
@@ -77,7 +80,6 @@ function visionectSendImage(uuid, imageFile) {
     headers.Date = date;
     headers.Authorization = helper.getAuthorization(path, method, contentType, date);
 
-
     var request = http.request({
         method: method,
         host: helper.getHost(),
@@ -95,7 +97,6 @@ function visionectSendImage(uuid, imageFile) {
     console.log('apiSecret : ', helper.getApiSecret());
     console.log('requete url : ', helper.getHost() + ':' + '8081' + path);
     console.log('headers : ', util.inspect(headers, {showHidden: false, depth: null}));
-
 
     var promise = new Promise(
         function (resolve, reject) {
@@ -136,4 +137,46 @@ function visionectPostMethod(path, body, expectedHttpCode, contentType) {
 
 function visionectDeleteMethod(path, expectedHttpCode, contentType) {
     return visionectRequest(path, 'DELETE', contentType, null, expectedHttpCode);
+}
+function visionectGetImageMethod(path,expectedHttpCode,contentType){
+    var method = method ? method : 'GET',
+        contentType = contentType ? contentType : 'application/json',
+        expectedHttpCode = expectedHttpCode ? expectedHttpCode : 200,
+        date = Date(),
+        // strip get arguments from path
+        cleanPath = (path.indexOf('?') > -1 ) ? path.substr(0, path.indexOf('?')) : path;
+
+    var authorization = helper.getAuthorization(cleanPath, method, contentType, date);
+
+    var headers = {
+        'content-type': contentType,
+        'Date': date,
+        'Authorization': authorization
+    };
+
+
+    var options = {
+        method: method,
+        host: helper.getHost(),
+        port: helper.getPort(),
+        path: path,
+        headers: headers
+    };
+
+    http.get(options, function(res){
+        var imagedata = ''
+        res.setEncoding('binary');
+
+        res.on('data', function(chunk){
+            imagedata += chunk
+        })
+
+        res.on('end', function(){
+            fs.writeFile('logo.png', imagedata, 'binary', function(err){
+                if (err) throw err
+                console.log('File saved.')
+            })
+        })
+
+    })
 }

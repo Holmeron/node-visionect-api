@@ -5,7 +5,24 @@ api.setConfig(config);
 
 var uuid = '46004900-1351-3432-3434-373300000000';
 
+
 /**
+
+// get liveview
+
+var fs = require('fs');
+api.getServerLiveView(uuid).then(function (response) {
+    fs.writeFile("image.png", response, 'binary', function (err) {
+        if (err) {
+            return console.log(err);
+        }
+
+        console.log("The file was saved!");
+    });
+})
+
+
+
  var uuid = 'your_uuid';
 
  // add a user

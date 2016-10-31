@@ -25,7 +25,7 @@ var visionectApi = {
     getVisionectConfig: getVisionectConfig,
     updateConfig: updateConfig,
 
-    getLiveServerView: getLiveServerView,
+    getServerLiveView: getServerLiveView,
     getDeviceLiveView: getDeviceLiveView,
 
     getDeviceStatus: getDeviceStatus,
@@ -33,7 +33,6 @@ var visionectApi = {
     sendImage: sendImage,
 
     setConfig: setConfig
-
 }
 
 module.exports = visionectApi;
@@ -128,7 +127,7 @@ function updateConfig(body) {
     return methods.visionectPutMethod('/api/config/', body, 204);
 }
 
-function getLiveServerView(uuid) {
+function getServerLiveView(uuid) {
     return methods.visionectGetMethod('/api/live/device/' + uuid + '/cached.png', 200, 'image/png');
 }
 
