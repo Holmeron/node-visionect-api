@@ -1,6 +1,6 @@
 {
   "name": "visionect-api",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "used to quickly bootstrap an app using visionect api",
   "main": "visionect-api.js",
   "scripts": {
