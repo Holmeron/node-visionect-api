@@ -9,6 +9,7 @@
   "author": "holmeron",
   "license": "ISC",
   "dependencies": {
+    "form-data": "^2.1.2",
     "fs": "0.0.1-security",
     "http": "0.0.0",
     "sjcl": "^1.0.6",
