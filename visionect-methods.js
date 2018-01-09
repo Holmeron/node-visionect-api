@@ -41,12 +41,22 @@ function visionectRequest(path, method, contentType, body, expectedHttpCode) {
         headers: headers,
         encoding: 'binary'
     });
-    request.end(body);
 
     console.log(method, helper.getHost(), helper.getPort(), path, body, authorization, date);
 
     var promise = new Promise(
         function (resolve, reject) {
+
+            // reject any request errors
+            request.on("error",function (err) {
+                reject(err);
+            });
+
+            // if request times out, emit an error and abort the request
+            request.on('timeout', function () {
+                request.emit("error",new Error('ETIMEDOUT'));
+                request.abort();
+            });
 
             request.on('response', function (response) {
                 response.setEncoding('binary');
@@ -60,9 +70,18 @@ function visionectRequest(path, method, contentType, body, expectedHttpCode) {
                 response.on('end', function () {
                     resolve(responseBody);
                 });
+
+                // reject any response errors
+                response.on('error', function (err) {
+                    reject(err);
+                });
             });
         }
     );
+
+    // write the body and send the request after we are attached to events
+    request.end(body);
+
     return promise;
 
 }

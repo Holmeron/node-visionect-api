@@ -7,7 +7,7 @@ NPM package here www.npmjs.com/package/visionect-api
 ## Prerequisite
 
 You'll need an instance of Visionect Server to use it 
-https://docs.visionect.com/VisionectPackages.html
+https://docs.visionect.com/VisionectSoftwareSuite/Installation.html
 When your server is running, go to your backend, select the user tab, and add a new apiKey.
 
 ## Install the package
